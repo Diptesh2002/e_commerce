@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Order Details</title>
+    <!-- Bootstrap CSS -->
+</head>
+<body>
+<div class="container mt-4">
+    <h1>Order Details #<span th:text="${order.id}"></span></h1>
+    <div th:each="item : ${order.items}">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 th:text="${item.product.prodName}"></h5>
+                <p>Quantity: <span th:text="${item.quantity}"></span></p>
+                <p>Price: ₹<span th:text="${#numbers.formatDecimal(item.priceAtPurchase, 1, 2)}"></span></p>
+            </div>
+        </div>
+    </div>
+    <a href="/user/orders" class="btn btn-secondary">Back to Orders</a>
+</div>
+</body>
+</html>

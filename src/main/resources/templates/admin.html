@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+  <h1>Admin - Manage Products</h1>
+
+  <!-- Product Form with Validation -->
+  <form th:action="@{/admin/products}" th:object="${newProduct}" method="post" th:method="post">
+    <div class="mb-3">
+      <label for="prodName" class="form-label">Product Name</label>
+      <input type="text" class="form-control"
+             id="prodName"
+             th:field="*{prodName}"
+             th:classappend="${#fields.hasErrors('prodName')} ? 'is-invalid' : ''">
+      <div class="invalid-feedback" th:if="${#fields.hasErrors('prodName')}">
+        <span th:errors="*{prodName}"></span>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="prodPrice" class="form-label">Price</label>
+      <input type="number" class="form-control"
+             id="prodPrice"
+             th:field="*{prodPrice}"
+             step="0.01"
+             th:classappend="${#fields.hasErrors('prodPrice')} ? 'is-invalid' : ''">
+      <div class="invalid-feedback" th:if="${#fields.hasErrors('prodPrice')}">
+        <span th:errors="*{prodPrice}"></span>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="prodDescription" class="form-label">Description</label>
+      <textarea class="form-control"
+                id="prodDescription"
+                th:field="*{prodDescription}"
+                th:classappend="${#fields.hasErrors('prodDescription')} ? 'is-invalid' : ''"></textarea>
+      <div class="invalid-feedback" th:if="${#fields.hasErrors('prodDescription')}">
+        <span th:errors="*{prodDescription}"></span>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="imgUrl" class="form-label">Image URL</label>
+      <input type="text" class="form-control"
+             id="imgUrl"
+             th:field="*{imgUrl}">
+    </div>
+
+    <div class="mb-3">
+      <label for="stockQuantity" class="form-label">Stock Quantity</label>
+      <input type="number" class="form-control"
+             id="stockQuantity"
+             th:field="*{stockQuantity}"
+             th:classappend="${#fields.hasErrors('stockQuantity')} ? 'is-invalid' : ''">
+      <div class="invalid-feedback" th:if="${#fields.hasErrors('stockQuantity')}">
+        <span th:errors="*{stockQuantity}"></span>
+      </div>
+    </div>
+
+    <div class="mb-3 form-check">
+      <input type="checkbox" class="form-check-input"
+             id="available"
+             th:field="*{available}">
+      <label class="form-check-label" for="available">Available</label>
+    </div>
+
+    <button type="submit" class="btn btn-success">Add Product</button>
+  </form>
+
+  <hr>
+
+  <!-- Existing Products Table -->
+  <h2>Existing Products</h2>
+  <div th:if="${products.isEmpty()}">
+    <div class="alert alert-info">No products found</div>
+  </div>
+  <table class="table" th:unless="${products.isEmpty()}">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Price</th>
+      <th>Stock</th>
+      <th>Available</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="product : ${products}">
+      <td th:text="${product.prodId}"></td>
+      <td th:text="${product.prodName}"></td>
+      <td th:text="${'$' + #numbers.formatDecimal(product.prodPrice, 1, 2)}"></td>
+      <td th:text="${product.stockQuantity}"></td>
+      <td>
+        <span th:if="${product.available}" class="badge bg-success">Yes</span>
+        <span th:unless="${product.available}" class="badge bg-danger">No</span>
+      </td>
+      <td>
+        <a th:href="@{'/admin/products/delete/' + ${product.prodId}}"
+           class="btn btn-danger btn-sm"
+           onclick="return confirm('Are you sure you want to delete this product?')">
+          Delete
+        </a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <hr>
+
+  <!-- Registered Users Table -->
+  <h2>Registered Users</h2>
+  <div th:if="${users.isEmpty()}">
+    <div class="alert alert-info">No registered users</div>
+  </div>
+  <table class="table" th:unless="${users.isEmpty()}">
+    <thead>
+    <tr>
+      <th>User ID</th>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Role</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+      <td th:text="${user.userId}"></td>
+      <td th:text="${user.userName}"></td>
+      <td th:text="${user.email}"></td>
+      <td>
+          <span th:text="${user.role}"
+                th:class="${user.role == 'ADMIN'} ? 'badge bg-primary' : 'badge bg-secondary'"></span>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

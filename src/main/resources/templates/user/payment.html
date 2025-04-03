@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <style>
+    body {
+      background: linear-gradient(to bottom, #6ab3f8, #ffffff);
+      font-family: 'Poppins', sans-serif;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .glass-card {
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0px 4px 15px rgba(0,0,0,0.3);
+      width: 100%;
+      max-width: 600px;
+    }
+    .btn-custom {
+      background-color: #db3bbe;
+      border-color: #db3bbe;
+      color: white;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    .btn-custom:hover {
+      background-color: #c02dad;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="glass-card">
+    <h1 class="mb-4 text-center">Payment</h1>
+    <div>
+      <h3>Order Summary</h3>
+      <p>Order ID: <span th:text="${order.id}"></span></p>
+      <p>Shipping Address: <span th:text="${order.shippingAddress}"></span></p>
+      <h4>Total Price: ₹<span th:text="${#numbers.formatDecimal(totalPrice, 1, 2)}"></span></h4>
+    </div>
+    <div class="text-center mt-4">
+      <button id="payButton" class="btn btn-custom">Pay Now</button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger mt-3" th:text="${error}"></div>
+  </div>
+</div>
+<script th:inline="javascript">
+  /*<![CDATA[*/
+      var orderDetails = /*[[${paymentOrderDetails}]]*/ '{}';
+      if (typeof orderDetails === 'string') {
+          try {
+              orderDetails = JSON.parse(orderDetails);
+          } catch (e) {
+              console.error("Failed to parse order details:", e);
+              alert("Error initializing payment. Please try again.");
+              window.location.href = "/user/checkout";
+          }
+      }
+      var options = {
+        "key": /*[[${razorpayKeyId}]]*/,
+        "amount": orderDetails.amount,
+        "currency": orderDetails.currency,
+        "name": "Your E-Commerce Store",
+        "description": "Order Payment",
+        "order_id": orderDetails.id,
+        "handler": function (response) {
+            alert("Payment successful!");
+            window.location.href = "/user/orders/" + /*[[${order.id}]]*/ "0";
+        },
+        "prefill": {
+            "name": "<customer_name>",
+            "email": "<customer_email>",
+            "contact": "<customer_contact>"
+        },
+        "theme": {
+            "color": "#db3bbe"
+        }
+      };
+      document.getElementById('payButton').addEventListener('click', function(e) {
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+        e.preventDefault();
+      });
+  /*]]>*/
+</script>
+</body>
+</html>
+
+
+
+
+

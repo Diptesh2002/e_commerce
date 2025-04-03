@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Orders</title>
+    <!-- Bootstrap CSS -->
+</head>
+<body>
+<div class="container mt-4">
+    <div class="glass-card">
+        <h1>Order History</h1>
+        <div th:each="order : ${orders}">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5>Order #<span th:text="${order.id}"></span></h5>
+                    <p>Date: <span th:text="${#temporals.format(order.orderDate, 'dd MMM yyyy')}"></span></p>
+                    <p>Total: ₹<span th:text="${#numbers.formatDecimal(order.totalPrice, 1, 2)}"></span></p>
+                    <a th:href="@{/user/orders/{id}(id=${order.id})}" class="btn btn-custom">
+                        View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

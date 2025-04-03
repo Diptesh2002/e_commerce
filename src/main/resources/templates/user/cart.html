@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+          background: #f0f2f5;
+          font-family: 'Poppins', sans-serif;
+          color: #333;
+        }
+        .glass-card {
+          background: rgba(0,0,0,0.75);
+          backdrop-filter: blur(10px);
+          border-radius: 15px;
+          padding: 20px;
+          color: white;
+          box-shadow: 0px 4px 15px rgba(0,0,0,0.3);
+        }
+        .btn-custom {
+          background-color: #db3bbe;
+          border-color: #db3bbe;
+          color: white;
+          font-weight: bold;
+        }
+        .btn-custom:hover {
+          background-color: #c02dad;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-4">
+    <div class="glass-card">
+        <h1 class="mb-4 text-center">Your Cart</h1>
+        <div th:if="${#lists.isEmpty(cart.items)}">
+            <p>Your cart is empty.</p>
+        </div>
+        <div th:each="item : ${cart.items}">
+            <div class="card mb-3">
+                <div class="card-body text-dark">
+                    <h5 th:text="${item.product.prodName}"></h5>
+                    <p th:text="'₹' + ${#numbers.formatDecimal(item.product.prodPrice, 1, 2)}"></p>
+                    <p>Quantity: <span th:text="${item.quantity}"></span></p>
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <a href="/user/checkout" class="btn btn-custom">Proceed to Checkout</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
